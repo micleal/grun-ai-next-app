@@ -32,7 +32,7 @@ export function Chat() {
                   className='overflow-x-ellipsis flex resize-none justify-end'
                 >
                   <div className='mb-2 flex w-fit flex-col items-start justify-end gap-0.5 px-8 py-4 text-accent-foreground'>
-                    <span className='rounded-3xl bg-primary px-4 py-2 text-primary-foreground'>
+                    <span className='rounded-3xl ml-auto bg-primary px-4 py-2 text-primary-foreground'>
                       {message.content}
                     </span>
                     <span className='ml-auto mr-4 justify-end text-xs text-muted-foreground'>
