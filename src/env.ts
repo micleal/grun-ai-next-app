@@ -7,10 +7,12 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_APP_NAME: z.string(),
+    NEXT_PUBLIC_BOT_NAME: z.string(),
   },
   runtimeEnv: {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+    NEXT_PUBLIC_BOT_NAME: process.env.NEXT_PUBLIC_BOT_NAME,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
