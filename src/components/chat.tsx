@@ -2,17 +2,23 @@
 
 import { useChat } from 'ai/react'
 import { Button } from './ui/button'
-import { Input } from './ui/input'
-import { useState, useEffect, use, FormEvent } from 'react'
 import { PaperPlaneIcon } from '@radix-ui/react-icons'
 import { Textarea } from './ui/textarea'
 import { ScrollArea } from './ui/scroll-area'
 import { useName } from '@/utils/hooks/useName'
+import { env } from '@/env'
 
 export function Chat() {
   const totalCharacterNumber = 2000
   const { name } = useName()
-  const { messages, input, handleInputChange, handleSubmit } = useChat()
+  const { messages, input, handleInputChange, handleSubmit, isLoading,  } =
+    useChat()
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      handleSubmit(e)
+    }
+  }
 
   return (
     <div className='grid grid-rows-[1fr_auto] p-2'>
@@ -23,25 +29,29 @@ export function Chat() {
               return message.role === 'user' ? (
                 <li
                   key={index}
-                  className='overflow-x-ellipsis flex resize-none rounded'
+                  className='overflow-x-ellipsis flex resize-none justify-end'
                 >
-                  <div className='mb-2 flex w-fit flex-col items-start justify-start gap-2 rounded bg-accent px-8 py-4 text-accent-foreground'>
-                    <span className='font-semibold text-primary'>
-                      {`${(!name && 'You') || name} (${new Date().toLocaleTimeString()} - ${new Date().toLocaleDateString()})`}
+                  <div className='mb-2 flex w-fit flex-col items-start justify-end gap-0.5 px-8 py-4 text-accent-foreground'>
+                    <span className='rounded-3xl bg-primary px-4 py-2 text-primary-foreground'>
+                      {message.content}
                     </span>
-                    <span>{message.content}</span>
+                    <span className='ml-auto mr-4 justify-end text-xs text-muted-foreground'>
+                      {`${(!name && 'You') || name} (${new Date(message.createdAt ?? new Date()).toLocaleTimeString()} - ${new Date(message.createdAt ?? new Date()).toLocaleDateString()})`}
+                    </span>
                   </div>
                 </li>
               ) : (
                 <li
                   key={index}
-                  className='overflow-x-ellipsis flex resize-none justify-end'
+                  className='overflow-x-ellipsis flex resize-none justify-start'
                 >
-                  <div className='mb-2 flex w-fit flex-col items-end justify-end gap-2 rounded bg-primary px-8 py-4 text-primary-foreground'>
-                    <span className='font-semibold text-secondary'>
-                      {`Grun (${new Date().toLocaleTimeString()} - ${new Date().toLocaleDateString()})`}
+                  <div className='mb-2 flex w-fit flex-col items-start justify-start gap-0.5 px-8 py-4 text-primary-foreground'>
+                    <span className='rounded-3xl bg-accent px-4 py-2'>
+                      {message.content}
                     </span>
-                    <span>{message.content}</span>
+                    <span className='ml-4 text-xs text-muted-foreground'>
+                      {`${env.NEXT_PUBLIC_BOT_NAME} (${message.createdAt?.toLocaleTimeString()} - ${message.createdAt?.toLocaleDateString()})`}
+                    </span>
                   </div>
                 </li>
               )
@@ -73,12 +83,15 @@ export function Chat() {
                   onChange={handleInputChange}
                   maxLength={2000}
                   spellCheck={true}
+                  onKeyDown={(e) => handleKeyDown(e)}
                 />
                 <p className='absolute bottom-1 right-14 text-xs font-medium italic text-muted-foreground'>
                   {input.length}/{totalCharacterNumber}
                 </p>
                 <Button
                   className='absolute bottom-1 right-2'
+                  name='send-message'
+                  title='Send message (Ctrl + Enter)'
                   type='submit'
                   size='icon'
                 >

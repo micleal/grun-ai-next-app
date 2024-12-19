@@ -6,8 +6,6 @@ import { useName } from '@/utils/hooks/useName'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-export const runtime = 'edge'
-
 export default function Home() {
   const { setName, name } = useName()
   const { push } = useRouter()
